@@ -6,8 +6,11 @@ import java.util.HashMap;
 
 public final class User {
 	
+	private static int sequence;
+	private final String id;
 	private String username;
 	private String email;
+	private String password;
 	private String locatedOn;
 	private InputStream profileImage;
 	private ArrayList<String> languages;
@@ -18,10 +21,13 @@ public final class User {
 	private ArrayList<User> follows;
 	private HashMap<String, Long> scores;
 	
-	public User(String username, String email, String locatedOn) {
+	public User(String username, String email, String password) {
+		sequence ++;
+		this.id = String.valueOf(sequence);
 		this.username = username;
 		this.email = email;
-		this.locatedOn = locatedOn;
+		this.password = password;
+		this.locatedOn = "";
 		this.profileImage = null;
 		this.languages = new ArrayList<String>();
 		this.posts = new ArrayList<Post>();
@@ -30,6 +36,9 @@ public final class User {
 		this.followers = new ArrayList<User>();
 		this.follows = new ArrayList<User>();
 		this.scores = new HashMap<String, Long>(); }
+
+	public final String getId() {
+		return id; }
 
 	public final String getUsername() {
 		return username; }
@@ -42,6 +51,12 @@ public final class User {
 
 	public final void setEmail(String email) {
 		this.email = email; }
+
+	public final String getPassword() {
+		return password; }
+
+	public final void setPassword(String password) {
+		this.password = password; }
 
 	public final String getLocatedOn() {
 		return locatedOn; }
@@ -96,13 +111,14 @@ public final class User {
 
 	public final void setScores(HashMap<String, Long> scores) {
 		this.scores = scores; }
-	
+
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", email=" + email
-				+ ", locatedOn=" + locatedOn + ", profileImage=" + profileImage
-				+ ", languages=" + languages + ", posts=" + posts + ", medals="
-				+ medals + ", notifications=" + notifications + ", followers="
+		return "User [id=" + id + ", username=" + username + ", email=" + email
+				+ ", password=" + password + ", locatedOn=" + locatedOn
+				+ ", profileImage=" + profileImage + ", languages=" + languages
+				+ ", posts=" + posts + ", medals=" + medals
+				+ ", notifications=" + notifications + ", followers="
 				+ followers + ", follows=" + follows + ", scores=" + scores
 				+ "]"; }
 
@@ -111,6 +127,7 @@ public final class User {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result
 				+ ((username == null) ? 0 : username.hashCode());
 		return result; }
@@ -129,10 +146,15 @@ public final class User {
 				return false; } }
 		else if (!email.equals(other.email)) {
 			return false; }
+		if (id == null) {
+			if (other.id != null) {
+				return false; } }
+		else if (!id.equals(other.id)) {
+			return false; }
 		if (username == null) {
 			if (other.username != null) {
 				return false; } }
 		else if (!username.equals(other.username)) {
 			return false; }
-		return true; }
+		return true; }	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public final class Post {
 	
+	private static int sequence;
+	private final int id;
 	private String description;
 	private Code code;
 	private ArrayList<Rating> rating;
@@ -11,11 +13,16 @@ public final class Post {
 	private ArrayList<Comment> comments;
 	
 	public Post(String description, Code code) {
+		sequence ++;
+		this.id = sequence;
 		this.description = description;
 		this.code = code;
 		this.rating = new ArrayList<Rating>();
 		this.shared = new ArrayList<User>();
 		this.comments = new ArrayList<Comment>(); }
+
+	public final int getId() {
+		return id; }
 
 	public final String getDescription() {
 		return description; }
@@ -49,9 +56,9 @@ public final class Post {
 
 	@Override
 	public String toString() {
-		return "Post [description=" + description + ", code=" + code
-				+ ", rating=" + rating + ", shared=" + shared + ", comments="
-				+ comments + "]"; }
+		return "Post [id=" + id + ", description=" + description + ", code="
+				+ code + ", rating=" + rating + ", shared=" + shared
+				+ ", comments=" + comments + "]"; }
 
 	@Override
 	public int hashCode() {
@@ -60,6 +67,7 @@ public final class Post {
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
+		result = prime * result + id;
 		return result; }
 
 	@Override
@@ -80,6 +88,8 @@ public final class Post {
 			if (other.description != null) {
 				return false; } }
 		else if (!description.equals(other.description)) {
+			return false; }
+		if (id != other.id) {
 			return false; }
 		return true; }
 }
