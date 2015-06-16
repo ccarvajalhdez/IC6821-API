@@ -1,16 +1,22 @@
 package api.models;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
-public class Account {
+public final class Account {
 	
 	private ArrayList<String> languages;
 	private String password;
 	private String location;
-	private InputStream picture;
+	private String picture;
+
+	public Account() { }
 	
-	public Account() {}
+	public Account(ArrayList<String> languages, String password,
+			String location, String picture) {
+		this.languages = languages;
+		this.password = password;
+		this.location = location;
+		this.picture = picture; }
 
 	public final ArrayList<String> getLanguages() {
 		return languages; }
@@ -30,9 +36,9 @@ public class Account {
 	public final void setLocation(String location) {
 		this.location = location; }
 
-	public final InputStream getPicture() {
+	public final String getPicture() {
 		return picture; }
 
-	public final void setPicture(InputStream picture) {
+	public final void setPicture(String picture) {
 		this.picture = picture; }
 }

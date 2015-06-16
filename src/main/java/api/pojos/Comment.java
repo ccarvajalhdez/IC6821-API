@@ -23,7 +23,7 @@ public final class Comment {
 
 	@Override
 	public String toString() {
-		return "Comment [user=" + user + ", content=" + content + "]"; }
+		return "Comment [user=" + user.getUsername() + ", content=" + content + "]"; }
 
 	@Override
 	public int hashCode() {

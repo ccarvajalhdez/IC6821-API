@@ -4,11 +4,8 @@ import api.pojos.User;
 
 public interface SessionService {
 	
-	public User signUp(String username,String email,String password,String passwordConfirm) throws Exception;
+	User signUp(String username, String email, String password, String passwordConfirm);
 	
-	public User getCurrentUser(String current_username);
+	boolean validateEmail(String email);
 	
-	public boolean validateEmail(String email);
-	
-	public User getUser(String username); }
-
+	User getUser(String userId); }

@@ -1,19 +1,26 @@
 package api.models;
 
-public class Publication {
+public final class Publication {
 	
-	private String publisher;
+	private String publisherId;
 	private String description;
 	private String code;
 	private String language;
-	
-	public Publication() {}
 
-	public final String getPublisher() {
-		return publisher; }
+	public Publication() { }
 
-	public final void setPublisher(String publisher) {
-		this.publisher = publisher; }
+	public Publication(String publisherId, String description, String code,
+			String language) {
+		this.publisherId = publisherId;
+		this.description = description;
+		this.code = code;
+		this.language = language; }
+
+	public final String getPublisherId() {
+		return publisherId; }
+
+	public final void setPublisherId(String publisherId) {
+		this.publisherId = publisherId; }
 
 	public final String getDescription() {
 		return description; }
@@ -31,5 +38,5 @@ public class Publication {
 		return language; }
 
 	public final void setLanguage(String language) {
-		this.language = language; }	
+		this.language = language; }
 }

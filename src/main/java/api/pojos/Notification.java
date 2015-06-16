@@ -3,10 +3,12 @@ package api.pojos;
 public final class Notification {
 	
 	private String content;
+	private User user;
 	private boolean seen;
 	
-	public Notification(String content) {
+	public Notification(String content, User user) {
 		this.content = content;
+		this.user = user;
 		this.seen = false; }
 
 	public final String getContent() {
@@ -14,6 +16,12 @@ public final class Notification {
 
 	public final void setContent(String content) {
 		this.content = content; }
+
+	public final User getUser() {
+		return user; }
+
+	public final void setUser(User user) {
+		this.user = user; }
 
 	public final boolean isSeen() {
 		return seen; }
@@ -23,14 +31,15 @@ public final class Notification {
 
 	@Override
 	public String toString() {
-		return "Notification [content=" + content + ", seen=" + seen + "]"; }
+		return "Notification [content=" + content + ", user=" + user.getUsername()
+				+ ", seen=" + seen + "]"; }
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((content == null) ? 0 : content.hashCode());
-		result = prime * result + (seen ? 1231 : 1237);
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result; }
 
 	@Override
@@ -44,10 +53,13 @@ public final class Notification {
 		Notification other = (Notification) obj;
 		if (content == null) {
 			if (other.content != null) {
-				return false; } } 
+				return false; } }
 		else if (!content.equals(other.content)) {
 			return false; }
-		if (seen != other.seen) {
+		if (user == null) {
+			if (other.user != null) {
+				return false; } }
+		else if (!user.equals(other.user)) {
 			return false; }
 		return true; }
 }

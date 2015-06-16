@@ -1,23 +1,13 @@
 package api.pojos;
 
-import java.io.InputStream;
-
 public final class Medal {
 	
-	private InputStream image;
 	private String type;
 	private String language;
 	
-	public Medal(InputStream image, String type, String language) {
-		this.image = image;
+	public Medal(String type, String language) {
 		this.type = type;
 		this.language = language; }
-
-	public final InputStream getImage() {
-		return image; }
-
-	public final void setImage(InputStream image) {
-		this.image = image; }
 
 	public final String getType() {
 		return type; }
@@ -33,8 +23,7 @@ public final class Medal {
 
 	@Override
 	public String toString() {
-		return "Medal [image=" + image + ", type=" + type + ", language="
-				+ language + "]"; }
+		return "Medal [type=" + type + ", language=" + language + "]"; }
 
 	@Override
 	public int hashCode() {

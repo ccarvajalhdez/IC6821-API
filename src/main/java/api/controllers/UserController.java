@@ -1,113 +1,209 @@
 package api.controllers;
 
-import java.util.Collection;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import api.interfaces.AccountConfigurationService;
+import api.interfaces.SessionService;
+import api.interfaces.UserFunctionsService;
+import api.interfaces.VisualizationService;
 import api.models.Account;
 import api.models.SignUp;
 import api.pojos.User;
-import api.repositories.Repository;
-import api.services.AccountConfigurationServiceMock;
-import api.services.SessionServiceMock;
-import api.services.UserFunctionsServiceMock;
+import api.views.GenericResponse;
+import api.views.GroupView;
+import api.views.Message;
+import api.views.UserView;
 
 @RestController
+@RequestMapping("/api/v0/")
 public final class UserController {
 	
-	@RequestMapping(
-			value = "/api/v0/users",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Collection<User>> getUsers() {
-        Collection<User> users = Repository.getRepository();
-		return new ResponseEntity<Collection<User>>(users, HttpStatus.OK); }
+	@Autowired
+    private SessionService sessionService;
 	
-	@RequestMapping(
-			value = "/api/v0/users/{username}",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> getUser(@PathVariable("username") String username) {
-        User user = new SessionServiceMock().getUser(username);
-        if (user != null){
-        	return new ResponseEntity<User>(user, HttpStatus.OK); }
-        else {
-        	return new ResponseEntity<User>(user, HttpStatus.NOT_FOUND); } }
+	@Autowired
+	private AccountConfigurationService accountConfigurationService;
 	
-	@RequestMapping(
-			value = "/api/v0/users",
-			method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> addUser(@RequestBody SignUp signUp) {
-        User user = null;
+	@Autowired
+	private UserFunctionsService userFunctionsService;
+	
+	@Autowired
+	private VisualizationService visualizationService;
+	
+	@RequestMapping(value = "users/{username}", method = RequestMethod.GET)
+	public UserView selectUser(HttpServletResponse response, @PathVariable("username") String username) {
+		UserView userView = new UserView();
 		try {
-			user = new SessionServiceMock().signUp(signUp.getUsername(), signUp.getEmail(), signUp.getPassword(), signUp.getPasswordConfirm());
-			return new ResponseEntity<User>(user, HttpStatus.CREATED); }
-		catch (Exception e) {
-			return new ResponseEntity<User>(user, HttpStatus.CONFLICT); } }
-	
-	@RequestMapping(
-			value = "/api/v0/users/emails/{email}",
-			method = RequestMethod.GET,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Boolean> isEmail(@PathVariable("email") String email) {
-		boolean bool = new SessionServiceMock().validateEmail(email);
-		if (bool) { return new ResponseEntity<Boolean>(bool, HttpStatus.OK); }
-		else { return new ResponseEntity<Boolean>(bool, HttpStatus.UNAUTHORIZED); } }
-	
-	@RequestMapping(
-			value = "/api/v0/users/{id}",
-			method = RequestMethod.DELETE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
-		try {
-			new AccountConfigurationServiceMock().deleteAccount(id);
-			return new ResponseEntity<String>("User deleted", HttpStatus.OK); }
-		catch(Exception e){
-			return new ResponseEntity<String>("User not found.", HttpStatus.NOT_FOUND); } }
-	
-	@RequestMapping(
-			value = "/api/v0/users/{id}",
-			method = RequestMethod.PUT,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> updateUser(@PathVariable("id") String id, @RequestBody Account account) {
-		try {
-			new AccountConfigurationServiceMock().editAccount(id, account.getLanguages(), account.getPassword(), account.getLocation(), account.getPicture());
-			return new ResponseEntity<String>("User updated.", HttpStatus.ACCEPTED); }
-		catch (Exception e) {
-			return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND); } }
-	
-	@RequestMapping(
-			value = "/api/v0/users/{currentUser}/friendship/{username}",
-			method = RequestMethod.PUT,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> followUser(@PathVariable("currentUser") String currentUser, @PathVariable("username") String username) {
-		try {
-			new UserFunctionsServiceMock().follow(currentUser, username);
-			return new ResponseEntity<String>("", HttpStatus.OK); }
+			User user = sessionService.getUser(username);
+			int status = 0;
+			if (user != null) { 
+				status = HttpServletResponse.SC_FOUND;
+				userView = new UserView(user); }
+			else { 
+				status = HttpServletResponse.SC_NOT_FOUND; }
+			response.setStatus(status);
+			return userView; }
 		catch(Exception e) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND); } }
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return userView; } }
 	
-	
-	@RequestMapping(
-			value = "/api/v0/users/{currentUser}/friendship/{username}",
-			method = RequestMethod.DELETE,
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> stopFollowUser(@PathVariable("currentUser") String currentUser, @PathVariable("username") String username) {
+	@RequestMapping(value = "users/{username}", method = RequestMethod.DELETE)
+	public GenericResponse deleteUser(HttpServletResponse response, @PathVariable("username") String username) {
+		GenericResponse genericResponse;
+		int status = 0;
 		try {
-			new UserFunctionsServiceMock().stopFollowing(currentUser, username);
-			return new ResponseEntity<String>("", HttpStatus.OK); }
+			User user = accountConfigurationService.deleteAccount(username);
+			if (user != null) {
+				status = HttpServletResponse.SC_OK;
+				genericResponse = new GenericResponse(status, Message.DELETED.get()); }
+			else {
+				status = HttpServletResponse.SC_NOT_FOUND;
+				genericResponse = new GenericResponse(status, Message.NOT_FOUND.get()); }
+			response.setStatus(status);
+			return genericResponse; }
+		catch (Exception e) {
+			status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			response.setStatus(status);
+			genericResponse = new GenericResponse(status, e.getMessage()); 
+			return genericResponse; } }
+	
+	@RequestMapping(value = "users/{username}", method = RequestMethod.PUT)
+	public UserView updateUser(HttpServletResponse response, @PathVariable("username") String username,
+			@RequestBody Account account) {
+		UserView userView = new UserView();
+		try {
+			String userId = username;
+			ArrayList<String> languages = account.getLanguages();
+			String password = account.getPassword();
+			String location = account.getLocation();
+			String image = account.getPicture();
+			InputStream picture = new ByteArrayInputStream(image.getBytes(StandardCharsets.UTF_8));
+			
+			User user = accountConfigurationService.editAccount(userId, languages, password, location, picture);
+			int status = 0;
+			if(user != null) {
+				status = HttpServletResponse.SC_OK;
+				userView = new UserView(user); }
+			else {
+				status = HttpServletResponse.SC_NOT_MODIFIED; }
+			response.setStatus(status);
+			return userView; }
+		catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return userView; } 
+	}
+	
+	@RequestMapping(value = "users", method = RequestMethod.POST)
+	public UserView insertUser(HttpServletResponse response, @RequestBody SignUp signUp) {
+		UserView userView = new UserView();
+		//try {
+			String username = signUp.getUsername();
+			String email = signUp.getEmail();
+			String password = signUp.getPassword();
+			String passwordConfirm = signUp.getPasswordConfirm();
+			
+			User user = sessionService.signUp(username, email, password, passwordConfirm);
+			int status = 0;
+			if (user != null) {
+				status = HttpServletResponse.SC_CREATED;
+				userView = new UserView(user); }
+			else {
+				status = HttpServletResponse.SC_NOT_ACCEPTABLE; }
+			response.setStatus(status);
+			return userView; 
+		//}
+		//catch(Exception e) {
+			//response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			//return userView; } 
+		
+	}
+	
+	@RequestMapping(value = "users/{follower}/relationship/{followed}", method = RequestMethod.PUT)
+	public GenericResponse createRelation(HttpServletResponse response, @PathVariable("follower") String follower,
+			@PathVariable("followed") String followed) {
+		GenericResponse genericResponse;
+		int status = 0;
+		try {
+			User user = userFunctionsService.follow(follower, followed);
+			if (user != null) {
+				status = HttpServletResponse.SC_CREATED;
+				genericResponse = new GenericResponse(status, Message.CREATED_RELATION.get()); }
+			else {
+				status = HttpServletResponse.SC_NOT_ACCEPTABLE;
+				genericResponse = new GenericResponse(status, Message.NOT_CREATED_RELATION.get()); }
+			response.setStatus(status);
+			return genericResponse; }
 		catch(Exception e) {
-			return new ResponseEntity<String>("", HttpStatus.NOT_FOUND); } }
+			status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			response.setStatus(status);
+			genericResponse = new GenericResponse(status, e.getMessage());
+			return genericResponse; } }
+	
+	@RequestMapping(value = "users/{follower}/relationship/{followed}", method = RequestMethod.DELETE)
+	public GenericResponse removeRelation(HttpServletResponse response, @PathVariable("follower") String follower,
+			@PathVariable("followed") String followed) {
+		GenericResponse genericResponse;
+		int status = 0;
+		try {
+			User user = userFunctionsService.stopFollowing(follower, followed);
+			if (user != null) {
+				status = HttpServletResponse.SC_OK;
+				genericResponse = new GenericResponse(status, Message.DELETED_RELATION.get()); }
+			else {
+				status = HttpServletResponse.SC_NOT_ACCEPTABLE;
+				genericResponse = new GenericResponse(status, Message.NOT_DELETED_RELATION.get()); } 
+			response.setStatus(status);
+			return genericResponse; }
+		catch(Exception e) {
+			status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+			response.setStatus(status);
+			genericResponse = new GenericResponse(status, e.getMessage());
+			return genericResponse; } }
+	
+	@RequestMapping(value = "users/{username}/followers", method = RequestMethod.GET)
+	public ArrayList<UserView> selectFollowers(HttpServletResponse response, @PathVariable("username") String userId) {
+		GroupView groupView = new GroupView();
+		try {
+			List<User> users = visualizationService.showFollowers(userId);
+			int status = 0;
+			if (users != null) {
+				status = HttpServletResponse.SC_FOUND;
+				groupView.setUsers(users); }
+			else {
+				status = HttpServletResponse.SC_NOT_FOUND; }
+			response.setStatus(status);
+			return groupView.getUsers(); }
+		catch(Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return groupView.getUsers(); } }
+	
+	@RequestMapping(value = "users/{username}/followed", method = RequestMethod.GET)
+	public ArrayList<UserView> selectFollowed(HttpServletResponse response, @PathVariable("username") String userId) {
+		GroupView groupView = new GroupView();
+		try {
+			List<User> users = visualizationService.showFollowing(userId);
+			int status = 0;
+			if (users != null) {
+				status = HttpServletResponse.SC_FOUND;
+				groupView.setUsers(users); }
+			else {
+				status = HttpServletResponse.SC_NOT_FOUND; }
+			response.setStatus(status);
+			return groupView.getUsers(); }
+		catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			return groupView.getUsers(); } }
 }

@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <!-- Meta Datos -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Propiedades -->
+  <title>Interfaz de Programación de Aplicaciones</title>
+
+  <link rel="stylesheet" type="text/css" href="Libraries/SemanticUI/semantic.css">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.address/1.6/jquery.address.min.js"></script>
+  <script src="Libraries/SemanticUI/semantic.js"></script>
+  
+  <link rel="stylesheet" type="text/css" href="Libraries/CSS/index.css">
+  <script src="Libraries/JavaScript/index.js"></script>
+  <script src="Libraries/JavaScript/ajax.js"></script>
+
+  <link rel="stylesheet" href="Libraries/CSS/codemirror.css">
+  <link rel="stylesheet" href="Libraries/CSS/monokai.css">
+
+  <script src="Libraries/JavaScript/codemirror.js"></script>
+  <script src="Libraries/JavaScript/active-line.js"></script>
+  <script src="Libraries/JavaScript/matchbrackets.js"></script>
+  <script src="Libraries/JavaScript/continuecomment.js"></script>
+  <script src="Libraries/JavaScript/comment.js"></script>
+  <script src="Libraries/JavaScript/javascript.js"></script>
+</head>
+
+<header>
+	<div class="ui black tiny launch right attached fixed button"><i class="content icon"></i><span class="text">Menú</span></div>
+	&nbsp;&nbsp; <strong>API Microblogging</strong>
+</header>
+
+<body>
+  <div class="ui inverted vertical sidebar menu large">
+  	<div class="item">
+  		<div class="ui secondary pointing filter menu">
+  			<a class="active red item" data-tab="http"><strong>Métodos HTTP</strong></a>
+  			<a class="blue item" data-tab="api"><strong>Servicios API</strong></a>
+		</div>
+		<div class="ui divider"></div>
+
+		<div class="ui active tab" data-tab="http">
+			<div class="ui inverted accordion">
+        <div class="title"><i class="dropdown icon"></i><strong>GET</strong></div>
+				<div class="content" id="getServices">
+					<a class="item" id="getUser">Obtener Usuario</a>
+					<a class="item" id="getFollowers">Obtener Quienes Siguen al Usuario</a>
+					<a class="item" id="getFollowing">Obtener a Quienes el Usuario Sigue</a>
+					<a class="item" id="getPosts">Obtener Publicaciones de Usuario</a>
+					<a class="item" id="getNotifications">Obtener Notificaciones de Usuario</a>
+					<a class="item" id="getMedals">Obtener Medallas de Usuario</a>
+					<a class="item" id="getWall">Obtener Muro de Usuario</a>
+					<a class="item" id="searchPosts">Buscar Publicaciones</a>
+				</div>
+
+    		<div class="title"><i class="dropdown icon"></i><strong>POST</strong></div>
+				<div class="content" id="postServices">
+					<a class="item" id="postUser">Agregar Usuario</a>
+					<a class="item" id="postPost">Agregar Publicación</a>
+					<a class="item" id="postComment">Agregar Comentario</a>			
+				</div>
+				
+    		<div class="title"><i class="dropdown icon"></i><strong>PUT</strong></div>
+				<div class="content" id="putServices">
+					<a class="item" id="putUser">Modificar Usuario</a>
+					<a class="item" id="putFollower">Seguir a Usuario</a>
+					<a class="item" id="putPost">Compartir Publicación</a>
+				</div>
+
+    		<div class="title"><i class="dropdown icon"></i><strong>DELETE</strong></div>
+				<div class="content" id="deleteServices">
+					<a class="item" id="deleteUser">Eliminar Usuario</a>
+					<a class="item" id="deleteFollower">Dejar de Seguir a Usuario</a>
+				</div>
+    	</div>
+		</div>
+
+		<div class="ui tab" data-tab="api">
+			<div class="ui inverted accordion">
+				<div class="title"><i class="dropdown icon"></i><strong>Usuarios</strong></div>
+				<div class="content" id="userServices">
+					<a class="item" id="getUsuario">Obtener Usuario</a>
+					<a class="item" id="deleteUsuario">Eliminar Usuario</a>
+					<a class="item" id="putUsuario">Modificar Usuario</a>
+					<a class="item" id="postUsuario">Agregar Usuario</a>
+					<a class="item" id="putSeguidor">Seguir a Usuario</a>
+					<a class="item" id="deleteSeguidor">Dejar de Seguir a Usuario</a>
+					<a class="item" id="getSeguidores">Obtener Quienes Siguen al Usuario</a>
+					<a class="item" id="getSeguidos">Obtener a Quienes el Usuario Sigue</a>
+    			</div>
+
+    			<div class="title"><i class="dropdown icon"></i><strong>Publicaciones</strong></div>
+    			<div class="content" id="postServices">
+    				<a class="item" id="postPublicacion">Agregar Publicación</a>
+					<a class="item" id="postComentario">Agregar Comentario</a>
+					<a class="item" id="putPublicacion">Compartir Publicación</a>
+					<a class="item" id="getPublicaciones">Obtener Publicaciones de Usuario</a>
+					<a class="item" id="getMuro">Obtener Muro de Usuario</a>
+					<a class="item" id="searchPublicaciones">Buscar Publicaciones</a>
+    			</div>
+
+    			<div class="title"><i class="dropdown icon"></i><strong>Notificaciones</strong></div>
+    			<div class="content" id="notificationServices">
+    				<a class="item" id="getNotificaciones">Obtener Notificaciones de Usuario</a>
+    			</div>
+
+    			<div class="title"><i class="dropdown icon"></i><strong>Medallas</strong></div>
+				<div class="content" id="medalServices">
+					<a class="item" id="getMedallas">Obtener Medallas de Usuario</a>
+				</div>
+
+    		</div>
+		</div>
+	</div>
+  </div>
+ 
+  <div class="ui celled grid">
+  	
+  	<div class="one column row">
+      <div class="column" style="background-color: #272822;">
+      	<h1 class="ui blue huge header" style="text-align:center;"><font size="6" id="title"><output id="serviceName" type="text"></font></h1>
+        <div class="ui secondary inverted raised segment">
+        	<div class="ui fluid labeled input"><div class="ui orange label">Localizador:&nbsp;</div><input id="serviceLocation" type="text"></div>
+        	<p></p>
+          <div class="ui inverted transparent fluid labeled input"><div class="ui orange label">Descripción:</div><input id="serviceDescription" type="text"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two column row" style="background-color: #272822;">
+      <div class="column">
+
+      	<h4 class="ui inverted top attached header"><font color="#F9264A">SOLICITUD</font></h4>
+      	<div class="ui inverted bottom attached segment">
+      		<form class="ui form">
+      			<div class="fluid field"><textarea id="code1" name="code1"></textarea></div>
+      			<div class="3 fluid ui icon buttons">
+      				<div class="ui inverted purple labeled icon button"><i class="big copy icon"></i>Copiar</div>
+  					<div class="ui inverted purple labeled icon button" id="run"><i class="big play icon"></i>Ejecutar</div>
+  					<div class="ui inverted purple labeled icon button" onclick="" id="wizard"><i class="big wizard icon"></i>Formulario</div>
+  				</div>
+      		</form>
+      	</div>
+
+      </div>
+      <div class="column">
+        <h4 class="ui inverted top attached header"><font color="#F9264A">RESPUESTA</font></h4>
+      	<div class="ui inverted bottom attached segment">
+      		<form class="ui form">
+      			<div class="field"><textarea id="code2" name="code2"></textarea></div>
+      			<div class="fluid ui inverted purple labeled icon button"><i class="big copy icon"></i>Copiar</div>
+      		</form>
+      	</div>
+      </div>
+    </div>
+  </div>
+ 
+  <!-- Modales  onclick="nombreDeModal()" en Botón Formulario-->
+  <div class="ui modal addUser">
+	<i class="close icon"></i>
+    <div class="header">Generar JSON para registro de nuevo usuario.</div>
+	<div class="ui form segment">
+	  <div class="two fields">
+	      <div class="field">
+	        <label>Nombre de Usuario:</label>
+	        <div class="ui icon input"><input id="input1" name="username" placeholder="Ejemplo: Ggonzalez25" type="text"><i class="user icon"></i></div>
+	      </div>
+	      <div class="field">
+	        <label>Correo Electrónico:</label>
+	        <div class="ui icon input"><input id="input2" name="email" placeholder="Ejemplo: ggonzalez25@mail.com" type="text"><i class="mail icon"></i></div>
+	      </div>
+	   </div>
+     <div class="two fields">
+        <div class="field">
+          <label>Contraseña:</label>
+          <div class="ui icon input"><input id="input3" name="password" type="password"><i class="lock icon"></i></div>
+        </div>
+        <div class="field">
+          <label>Confirmación de Contraseña:</label>
+          <div class="ui icon input"><input id="input4" name="passwordConfirm" type="password"><i class="lock icon"></i></div>
+        </div>
+     </div>
+	</div>
+	<div class="actions">
+	 	<div class="negative ui button">Cancelar</div>
+		<div class="positive ui button" id="accept1">Aceptar</div>
+    </div>
+  </div>
+
+  <div class="ui modal addComment">
+  <i class="close icon"></i>
+    <div class="header">Generar JSON para ingresar un nuevo comentario.</div>
+  <div class="ui form segment">
+     <div class="field">
+        <label>Nombre de Usuario:</label>
+        <div class="ui icon input"><input id="input5" name="userId" placeholder="Ejemplo: Ggonzalez25" type="text"><i class="user icon"></i></div>
+     </div>
+     <div class="field">
+        <label>Comentario:</label>
+        <input id="input6" name="comment" placeholder="..." type="text">
+     </div>
+  </div>
+  <div class="actions">
+    <div class="negative ui button">Cancelar</div>
+    <div class="positive ui button" id="accept2">Aceptar</div>
+    </div>
+  </div>
+
+  <div class="ui modal addPost">
+  <i class="close icon"></i>
+    <div class="header">Generar JSON para crear una nueva publicación.</div>
+  <div class="ui form segment">
+    <div class="two fields">
+        <div class="field">
+          <label>Nombre de Usuario del Publicador:</label>
+          <div class="ui icon input"><input id="input7" name="publiserId" placeholder="Ejemplo: Ggonzalez25" type="text"><i class="user icon"></i></div>
+        </div>
+        <div class="field">
+          <label>Lenjuaje de Programación:</label>
+          <input id="input8" name="languaje" placeholder="Ejemplo: Python." type="text">
+        </div>
+    </div>
+        <div class="field">
+          <label>Descripción del Código:</label>
+          <input id="input9" name="description" placeholder="Ejemplo: Código para imprimir en pantalla una cadenade de caracteres." type="text">
+        </div>
+        <div class="field">
+          <label>Especificación del Código:</label>
+          <textarea id="textarea1" name="code" placeholder='Ejemplo: print("¡Hola Mundo!");' type="code"></textarea>
+        </div>
+  </div>
+  <div class="actions">
+    <div class="negative ui button">Cancelar</div>
+    <div class="positive ui button" id="accept3">Aceptar</div>
+    </div>
+  </div>
+
+  <div class="ui modal editUser">
+  <i class="close icon"></i>
+    <div class="header">Generar JSON para editar un usuario existente.</div>
+  <div class="ui form segment">
+    <div class="two fields">
+        <div class="field">
+          <label>Contraseña:</label>
+          <div class="ui icon input"><input id="input10" name="password" type="password"><i class="lock icon"></i></div>
+        </div>
+        <div class="field">
+          <label>Localización:</label>
+          <input id="input11" name="location" placeholder="Ejemplo: Costa Rica." type="text">
+        </div>
+     </div>
+        <div class="field">
+          <label>Lista de Lenguajes:</label>
+          <input id="input12" name="languajes" placeholder="Ejemplo: Java, C++, C" type="text">
+        </div>
+        <div class="field">
+          <label>Ruta de Imagen:</label>
+          <input id="input13" accept='image/*' name="picture" type="file" onchange='openFile(event)'>
+          <img id='output' style="width: 423px; height: 246px;">
+        </div>
+  </div>
+  <div class="actions">
+    <div class="negative ui button">Cancelar</div>
+    <div class="positive ui button" id="accept4">Aceptar</div>
+    </div>
+  </div>
+
+  <div class="ui modal searchPosts">
+  <i class="close icon"></i>
+    <div class="header">Generar JSON para realizar una búsqueda de publicaciones.</div>
+  <div class="ui form segment">
+    <div class="three fields">
+        <div class="field">
+          <label>Localización:</label>
+          <input id="input14" name="region" placeholder="Ejemplo: Costa Rica." type="text">
+        </div>
+        <div class="field">
+          <label>Fecha Inicial:</label>
+          <div class="ui icon input"><input id="input15" name="from" placeholder="Ejemplo: 25/02/2015" type="date"><i class="calendar icon"></i></div>
+        </div>
+        <div class="field">
+          <label>Fecha Final:</label>
+          <div class="ui icon input"><input id="input16" name="to" placeholder="Ejemplo: 12/09/2015" type="date"><i class="calendar icon"></i></div>
+        </div>
+     </div>
+  </div>
+  <div class="actions">
+    <div class="negative ui button">Cancelar</div>
+    <div class="positive ui button" id="accept5">Aceptar</div>
+    </div>
+  </div>
+
+  <div class="ui modal vacio">
+  <i class="close icon"></i>
+    <div class="header">Este servicio no requiere de un JSON de entrada.</div>
+  <div class="actions">
+    <div class="positive ui button">Aceptar</div>
+    </div>
+  </div>
+
+  <script >
+    function openFile(event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function(){
+            var dataURL = reader.result;
+            var output = document.getElementById('output');
+            output.src = dataURL;
+        };
+        reader.readAsDataURL(input.files[0]);
+    };
+  </script>
+  <script>
+      var $request = CodeMirror.fromTextArea(document.getElementById("code1"), {
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        mode: "application/ld+json",
+        lineWrapping: true,
+        styleActiveLine: true,
+        lineNumbers: true,
+        theme: "monokai"
+      });
+  </script>
+
+  <script>
+      var $response = CodeMirror.fromTextArea(document.getElementById("code2"), {
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        mode: "application/ld+json",
+        lineWrapping: true,
+        styleActiveLine: true,
+        lineNumbers: true,
+        theme: "monokai"
+      });
+  </script>
+  
+</body>
+
+</html>

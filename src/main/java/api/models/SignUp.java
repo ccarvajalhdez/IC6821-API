@@ -1,35 +1,42 @@
 package api.models;
 
-public class SignUp {
+public final class SignUp {
 	
 	private String username;
 	private String email;
 	private String password;
 	private String passwordConfirm;
+
+	public SignUp() { }
 	
-	public SignUp() {}
-	
-	public String getUsername() {
+	public SignUp(String username, String email, String password,
+			String passwordConfirm) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.passwordConfirm = passwordConfirm; }
+
+	public final String getUsername() {
 		return username; }
 
-	public void setUsername(String username) {
+	public final void setUsername(String username) {
 		this.username = username; }
 
-	public String getEmail() {
+	public final String getEmail() {
 		return email; }
 
-	public void setEmail(String email) {
+	public final void setEmail(String email) {
 		this.email = email; }
 
-	public String getPassword() {
+	public final String getPassword() {
 		return password; }
 
-	public void setPassword(String password) {
+	public final void setPassword(String password) {
 		this.password = password; }
 
-	public String getPasswordConfirm() {
+	public final String getPasswordConfirm() {
 		return passwordConfirm; }
 
-	public void setPasswordConfirm(String passwordConfirm) {
+	public final void setPasswordConfirm(String passwordConfirm) {
 		this.passwordConfirm = passwordConfirm; }
 }

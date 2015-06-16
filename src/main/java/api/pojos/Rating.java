@@ -23,7 +23,7 @@ public final class Rating {
 
 	@Override
 	public String toString() {
-		return "Rating [user=" + user + ", score=" + score + "]"; }
+		return "Rating [user=" + user.getUsername() + ", score=" + score + "]"; }
 
 	@Override
 	public int hashCode() {

@@ -1,28 +1,31 @@
 package api.pojos;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public final class Post {
 	
 	private static int sequence;
-	private final int id;
+	private final String id;
 	private String description;
 	private Code code;
-	private ArrayList<Rating> rating;
+	private User user;
+	private ArrayList<Rating> ratings;
 	private ArrayList<User> shared;
 	private ArrayList<Comment> comments;
+	private Date createdDate;
 	
-	public Post(String description, Code code) {
+	public Post(String description, Code code, User user) {
 		sequence ++;
-		this.id = sequence;
+		this.id = String.valueOf(sequence);
 		this.description = description;
 		this.code = code;
-		this.rating = new ArrayList<Rating>();
+		this.user = user;
+		this.ratings = new ArrayList<Rating>();
 		this.shared = new ArrayList<User>();
-		this.comments = new ArrayList<Comment>(); }
-
-	public final int getId() {
-		return id; }
+		this.comments = new ArrayList<Comment>();
+		this.setCreatedDate(Calendar.getInstance().getTime()); }
 
 	public final String getDescription() {
 		return description; }
@@ -36,11 +39,17 @@ public final class Post {
 	public final void setCode(Code code) {
 		this.code = code; }
 
-	public final ArrayList<Rating> getRating() {
-		return rating; }
+	public final User getUser() {
+		return user; }
 
-	public final void setRating(ArrayList<Rating> rating) {
-		this.rating = rating; }
+	public final void setUser(User user) {
+		this.user = user; }
+
+	public final ArrayList<Rating> getRatings() {
+		return ratings; }
+
+	public final void setRatings(ArrayList<Rating> ratings) {
+		this.ratings = ratings; }
 
 	public final ArrayList<User> getShared() {
 		return shared; }
@@ -54,11 +63,20 @@ public final class Post {
 	public final void setComments(ArrayList<Comment> comments) {
 		this.comments = comments; }
 
+	public final Date getCreatedDate() {
+		return createdDate; }
+
+	public final void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate; }
+
+	public final String getId() {
+		return id; }
+
 	@Override
 	public String toString() {
 		return "Post [id=" + id + ", description=" + description + ", code="
-				+ code + ", rating=" + rating + ", shared=" + shared
-				+ ", comments=" + comments + "]"; }
+				+ code + ", user=" + user.getUsername() + ", ratings=" + ratings
+				+ ", shared=" + shared + ", comments=" + comments + "]"; }
 
 	@Override
 	public int hashCode() {
@@ -67,7 +85,6 @@ public final class Post {
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
 		result = prime * result
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result + id;
 		return result; }
 
 	@Override
@@ -88,8 +105,6 @@ public final class Post {
 			if (other.description != null) {
 				return false; } }
 		else if (!description.equals(other.description)) {
-			return false; }
-		if (id != other.id) {
 			return false; }
 		return true; }
 }

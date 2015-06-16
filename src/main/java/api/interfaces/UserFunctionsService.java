@@ -2,14 +2,20 @@ package api.interfaces;
 
 import java.util.List;
 
+import api.pojos.Comment;
+import api.pojos.Post;
+import api.pojos.User;
+
 public interface UserFunctionsService {
 	
 	public List<Object> search(String value);
 	
-	public void publish(String publisher,String description,String code,String language) throws Exception;
+	public Post publish(String publisherId, String description, String code, String language);
 	
-	public void commentPublication(int postId,String username,String comment) throws Exception;
+	public Comment commentPublication(String postId, String userId, String comment);
 	
-	public void follow(String currentUser,String username) throws Exception;
+	public User follow(String currentUserId, String userId);
 	
-	public void stopFollowing(String currentUser,String username) throws Exception; }
+	public User stopFollowing(String currentUserId, String userId);
+	
+	public Post share(String userId, String postId); }
